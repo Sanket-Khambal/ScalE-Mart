@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from .views import add_to_cart, view_cart, checkout
 
+#shubham checking for pull request
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
