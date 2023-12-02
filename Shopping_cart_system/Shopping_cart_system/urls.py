@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .views import add_to_cart, view_cart, checkout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
+    path('cart/', view_cart, name='view_cart'),
+    path('checkout/<str:payment_method>/', checkout, name='checkout'),
 ]
