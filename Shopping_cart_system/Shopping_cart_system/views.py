@@ -1,50 +1,16 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Cart, Product, CartItem
-from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,ViewCartCommand
-from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy
+from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,ViewCartCommand,RemoveFromCartCommand
+from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy,QuantityBasedDiscountStrategy
 
 def home(request):
     return render(request,'home.html')
-
-@login_required
-def add_to_cart(request, product_id):
-    product = Product.objects.get(pk=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    strategy = DefaultPriceCalculationStrategy()
-    command = AddToCartCommand(cart, product, quantity=1, strategy=strategy)
-    command.execute()
-    return redirect('cart')
-
-
-@login_required
-def checkout(request, payment_method):
-    cart = Cart()
-    cart_items = cart.get_items()
-
-    # Payment strategy
-    if payment_method == 'credit_card':
-        payment_strategy = CreditCardPaymentStrategy()
-    elif payment_method == 'paypal':
-        payment_strategy = PayPalPaymentStrategy()
-    else:
-        return HttpResponseBadRequest("Invalid payment method")
-
-    total_price = sum(item['product'].price * item['quantity'] for item in cart_items)
-
-    # Process payment
-    payment_result = payment_strategy.process_payment(total_price)
-
-    # Additional checkout logic (e.g., order creation, inventory update)
-
-    # Clear the cart after checkout
-    cart.clear_cart()
-
-    return render(request, 'checkout.html', {'payment_result': payment_result})
 
 def register_user(request):
     if request.method == 'POST':
@@ -52,7 +18,7 @@ def register_user(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')  # Replace 'home' with the name of your home page or another desired destination
+            return redirect('home')  
     else:
         form = UserCreationForm()
     
@@ -64,8 +30,7 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('user_home')  # Replace 'home' with the name of your home page or another desired destination
-    else:
+            return redirect('user_home')  
         form = AuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
@@ -96,7 +61,8 @@ def view_cart(request):
         {
             'product_name': item.product.name,
             'quantity': item.quantity,
-            'total_price': item.product.price * item.quantity
+            'total_price': item.product.price * item.quantity,
+            'id':item.product.id
         }
         for item in cart_items
     ]
@@ -124,3 +90,51 @@ def add_to_cart(request, product_id):
         add_to_cart_command = AddToCartCommand(cart=user_cart, product=product, quantity=quantity)
         add_to_cart_command.execute()
         return redirect('products_by_category',category=category) 
+    
+def remove_from_cart(request, product_id, quantity):
+    product = Product.objects.get(pk=product_id)
+    user_cart = Cart.objects.get(user=request.user)
+    remove_command = RemoveFromCartCommand(cart=user_cart, product=product, quantity=quantity)
+    remove_command.execute()
+    return redirect('view_cart') 
+    
+
+def checkout(request):
+    # Retrieve the user's cart
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+
+    # View the cart to get the cart items
+    view_cart_command = ViewCartCommand(cart=user_cart)
+    cart_items = view_cart_command.execute()
+
+    # Apply quantity-based discount strategy if there are more than four products
+    quantity_discount_threshold = 4
+    if len(cart_items) > quantity_discount_threshold:
+        discount_strategy = QuantityBasedDiscountStrategy(DefaultPriceCalculationStrategy(), discount_threshold=quantity_discount_threshold, discount_percentage=15)
+        discount_message = f'Quantity discount applied! Get {discount_strategy.discount_percentage}% off for purchasing more than {quantity_discount_threshold} products.'
+    else:
+        discount_strategy = DiscountPriceCalculationStrategy(DefaultPriceCalculationStrategy(), discount_percentage=10)
+        discount_message = 'Default discount applied!'
+
+    # Apply coupon discount if a coupon code is provided
+    coupon_code = request.GET.get('coupon_code')
+    if coupon_code:
+        # Checking if the provided coupon code is valid
+        coupon_strategy = CouponDiscountStrategy(discount_strategy, coupon_code, discount_percentage=20)
+        if coupon_strategy.is_coupon_valid():
+            total_price = sum(coupon_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
+            messages.success(request, f'Coupon "{coupon_code}" applied successfully! {discount_message}')
+        else:
+            total_price = sum(discount_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
+            messages.error(request, f'Invalid coupon code. {discount_message}')
+    else:
+        total_price = sum(discount_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
+        messages.success(request, discount_message)
+
+    data = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+
+    return render(request, 'checkout.html', data)
+
