@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QMS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        #background-image {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: -1;
+        }
+
+        .content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            width: 40%
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            color: black;
+            background-color: azure;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: white;
+            background-color: #5268db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #5466b1;
+        }
+    </style>
+</head>
+
+<body>
+
+    
+    <div class="content">
+        <h1>Welcome to QuizApp!</h1>
+        <div class="buttons">
+            <a href='{% url "login" %}' class="button">Login</a>
+            <a href='{% url "register" %}' class="button"> Sign Up</a>
+        </div>
+    </div>
+</body>
+
+</html>
