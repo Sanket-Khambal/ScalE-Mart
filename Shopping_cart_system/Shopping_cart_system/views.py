@@ -5,7 +5,7 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Cart, Product, CartItem
-from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand
+from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,ViewCartCommand
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy
 
 def home(request):
@@ -20,25 +20,6 @@ def add_to_cart(request, product_id):
     command.execute()
     return redirect('cart')
 
-
-
-@login_required
-def view_cart(request):
-    cart = Cart.objects.get(user=request.user)
-    cart_items = cart.items.all()
-
-    # Apply discount strategies
-    discount_strategy = DiscountPriceCalculationStrategy(DefaultPriceCalculationStrategy(), discount_percentage=10)
-
-    # Apply coupon discount if a coupon code is provided
-    coupon_code = request.GET.get('coupon_code')
-    if coupon_code:
-        coupon_strategy = CouponDiscountStrategy(discount_strategy, coupon_code, discount_percentage=20)
-        total_price = sum(coupon_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
-    else:
-        total_price = sum(discount_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
-
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
 @login_required
 def checkout(request, payment_method):
@@ -104,6 +85,31 @@ def view_products_by_category(request, category):
     }
 
     return render(request, 'products_by_category.html', data)
+
+def view_cart(request):
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+
+    view_cart_command = ViewCartCommand(cart=user_cart)
+    cart_items = view_cart_command.execute()
+
+    cart_items_data = [
+        {
+            'product_name': item.product.name,
+            'quantity': item.quantity,
+            'total_price': item.product.price * item.quantity
+        }
+        for item in cart_items
+    ]
+
+    total_price = sum(item['total_price'] for item in cart_items_data)
+
+    context = {
+        'cart_items_data': cart_items_data,
+        'total_price': total_price,
+    }
+
+    return render(request, 'cart.html', context)
+
 
 def add_to_cart(request, product_id):
     # getting the user's cart

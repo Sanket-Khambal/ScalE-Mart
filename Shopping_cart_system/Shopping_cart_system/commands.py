@@ -6,6 +6,13 @@ class Command(ABC):
     def execute(self):
         pass
 
+class ViewCartCommand(Command):
+    def __init__(self, cart):
+        self.cart = cart
+
+    def execute(self):
+        return self.cart.cartitem_set.all()
+
 class AddToCartCommand(Command):
     def __init__(self, cart, product, quantity):
         self.cart = cart

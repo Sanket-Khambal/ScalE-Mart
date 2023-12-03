@@ -6,6 +6,7 @@
     <title>Product Categories</title>
 </head>
 <body>
+    <h1><a href="#">Start Shopping</a></h1>
     <div class="product-options">
         {% for category in categories %}
             <div class="product-category">
@@ -15,5 +16,6 @@
             </div>
         {% endfor %}
     </div>
+    <a href="{% url 'view_cart' %}">Your Cart</a>
 </body>
 </html>
