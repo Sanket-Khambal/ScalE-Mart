@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import add_to_cart, view_cart, checkout,register_user,login_user,home,view_products_by_category,categories,remove_from_cart
+from .views import add_to_cart, view_cart, checkout,register_user,login_user,home,view_products_by_category,categories,remove_from_cart,set_budget
 
 #shubham checking for pull request
 
@@ -33,4 +33,5 @@ urlpatterns = [
     path('view-cart', view_cart, name='view_cart'),
     path('checkout/', checkout, name='checkout'),
     path('remove_from_cart/<int:product_id>/<int:quantity>/', remove_from_cart, name='remove_from_cart'),
+    path('set-budget', set_budget, name='set_budget'),
 ]

@@ -17,5 +17,20 @@
         {% endfor %}
     </div>
     <a href="{% url 'view_cart' %}">Your Cart</a>
+    <br>
+    <button id="setBudgetButton">Set Budget</button>
+    <form method="post" action="{% url 'set_budget' %}" id="budgetForm" style="display: none;">
+        {% csrf_token %}
+        <label for="budget">Set Budget:</label>
+        <input type="text" name="budget" required>
+        <button type="submit">Set Budget</button>
+    </form>
+
+    <script>
+        document.getElementById('setBudgetButton').addEventListener('click', function() {
+            var form = document.getElementById('budgetForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
 </body>
 </html>

@@ -5,9 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Cart, Product, CartItem
+from .models import Cart, Product, CartItem,UserProfile
 from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,ViewCartCommand,RemoveFromCartCommand
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy,QuantityBasedDiscountStrategy
+from Shopping_cart_system.observers import BudgetExceededObserver
 
 def home(request):
     return render(request,'home.html')
@@ -25,6 +26,8 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -38,6 +41,17 @@ def login_user(request):
 def categories(request):
     unique_categories = Product.objects.values('category').distinct()
     return render(request, 'categories.html', {'categories': unique_categories})
+
+@login_required
+def set_budget(request):
+    if request.method == 'POST':
+        budget = request.POST.get('budget')
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_profile.budget = budget
+        user_profile.save()
+        return redirect('user_home')  
+    else:
+        return redirect('user_home')
 
 def view_products_by_category(request, category):
     # Using the ViewProductsCommand to get products for the specified category
@@ -100,6 +114,7 @@ def remove_from_cart(request, product_id, quantity):
     
 
 def checkout(request):
+    print(f"User object in request: {request.user}")
     # Retrieve the user's cart
     user_cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -130,6 +145,12 @@ def checkout(request):
     else:
         total_price = sum(discount_strategy.calculate_price(item.product, item.quantity) for item in cart_items)
         messages.success(request, discount_message)
+
+    # Notify observers (BudgetExceededObserver)
+    observers = [BudgetExceededObserver()]
+    for observer in observers:
+        observer.notify(request, total_price)
+
 
     data = {
         'cart_items': cart_items,
