@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Shopping_cart_system.models import CartItem
+from Shopping_cart_system.models import CartItem,Product
 
 class Command(ABC):
     @abstractmethod
@@ -34,3 +34,11 @@ class RemoveFromCartCommand(Command):
                 cart_item.delete()
         except CartItem.DoesNotExist:
             pass  # Handle the case where the item is not in the cart
+
+class ViewProductsCommand(Command):
+    def __init__(self, category):
+        self.category = category
+
+    def execute(self):
+        products = Product.objects.filter(category=self.category)
+        return products

@@ -5,7 +5,7 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Cart, Product
-from Shopping_cart_system.commands import AddToCartCommand
+from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy
 
 def home(request):
@@ -83,10 +83,26 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')  # Replace 'home' with the name of your home page or another desired destination
+            return redirect('user_home')  # Replace 'home' with the name of your home page or another desired destination
     else:
         form = AuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
+
+def categories(request):
+    unique_categories = Product.objects.values('category').distinct()
+    return render(request, 'categories.html', {'categories': unique_categories})
+
+def view_products_by_category(request, category):
+    # Using the ViewProductsCommand to get products for the specified category
+    view_command = ViewProductsCommand(category)
+    products = view_command.execute()
+
+    data = {
+        'category': category,
+        'products': products,
+    }
+
+    return render(request, 'products_by_category.html', data)
 
 

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Categories</title>
+</head>
+<body>
+    <div class="product-options">
+        {% for category in categories %}
+            <div class="product-category">
+                <a href="{% url 'products_by_category' category=category.category %}">
+                    <h2>{{ category.category }}</h2>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

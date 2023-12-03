@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import add_to_cart, view_cart, checkout,register_user,login_user,home
+from .views import add_to_cart, view_cart, checkout,register_user,login_user,home,view_products_by_category,categories
 
 #shubham checking for pull request
 
@@ -27,4 +27,6 @@ urlpatterns = [
     path('checkout<str:payment_method>', checkout, name='checkout'),
     path('register', register_user, name='register'),
     path('login', login_user, name='login'),
+    path('user_home',categories,name='user_home'),
+    path('view-products/<str:category>', view_products_by_category, name='products_by_category'),
 ]
