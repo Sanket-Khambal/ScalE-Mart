@@ -12,6 +12,12 @@
         <ul>
             {% for product in products %}
                 <li>{{ product.name }} - ${{ product.price }}</li>
+                <form method="post" action="{% url 'add_to_cart' product_id=product.id %}">
+                    {% csrf_token %}
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" name="quantity" value="1" min="1" required>
+                    <button type="submit">Add to Cart</button>
+                </form>
             {% endfor %}
         </ul>
     {% else %}

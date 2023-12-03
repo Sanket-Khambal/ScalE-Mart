@@ -29,4 +29,5 @@ urlpatterns = [
     path('login', login_user, name='login'),
     path('user_home',categories,name='user_home'),
     path('view-products/<str:category>', view_products_by_category, name='products_by_category'),
+    path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
 ]

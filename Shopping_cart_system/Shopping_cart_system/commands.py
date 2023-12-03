@@ -14,7 +14,7 @@ class AddToCartCommand(Command):
 
     def execute(self):
         cart_item, created = CartItem.objects.get_or_create(cart=self.cart, product=self.product)
-        cart_item.quantity += self.quantity
+        cart_item.quantity = self.quantity
         cart_item.save()
 
 

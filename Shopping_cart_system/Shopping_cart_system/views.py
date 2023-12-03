@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Cart, Product
+from .models import Cart, Product, CartItem
 from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy
 
@@ -105,4 +105,16 @@ def view_products_by_category(request, category):
 
     return render(request, 'products_by_category.html', data)
 
+def add_to_cart(request, product_id):
+    # getting the user's cart
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
 
+    # Getting the product based on the product_id
+    product = Product.objects.get(pk=product_id)
+    category = product.category
+
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        add_to_cart_command = AddToCartCommand(cart=user_cart, product=product, quantity=quantity)
+        add_to_cart_command.execute()
+        return redirect('products_by_category',category=category) 
