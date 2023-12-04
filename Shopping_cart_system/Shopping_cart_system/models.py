@@ -17,6 +17,7 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)    
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  
+    budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
     def __str__(self):
         return self.user.username
