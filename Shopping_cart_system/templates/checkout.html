@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+    <h2>Checkout</h2>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h3>Cart Items:</h3>
+    <ul>
+        {% for item in cart_items %}
+            <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ${{ item.product.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Total Price:</h3>
+    <p>${{ total_price }}</p>
+
+    <h3>Apply Coupon:</h3>
+    <form action="{% url 'checkout' %}" method="get">
+        <input type="text" name="coupon_code" placeholder="Enter coupon code">
+        <input type="submit" value="Apply Coupon">
+    </form>
+
+    <a href="{% url 'user_home' %}">Back to Home</a>
+</body>
+</html>
