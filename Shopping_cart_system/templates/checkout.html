@@ -32,6 +32,19 @@
         <input type="text" name="coupon_code" placeholder="Enter coupon code">
         <input type="submit" value="Apply Coupon">
     </form>
+    <br>
+    <form method="post" action="{% url 'process_payment' %}">
+        {% csrf_token %}
+        <label for="payment_method">Select Payment Method:</label>
+        <select name="payment_method" id="payment_method">
+            <option value="credit card">Credit Card</option>
+            <option value="paypal">Paypal</option>
+        </select>
+        <br>
+        <input type="hidden" name="total_price" value="{{ total_price }}">
+
+        <button type="submit">Make Payment</button>
+    </form>
 
     <a href="{% url 'user_home' %}">Back to Home</a>
 </body>

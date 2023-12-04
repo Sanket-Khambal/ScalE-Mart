@@ -59,11 +59,9 @@ class PaymentStrategy(ABC):
 
 class CreditCardPaymentStrategy(PaymentStrategy):
     def process_payment(self, amount):
-        # Implement credit card payment logic
         return f'Paid ${amount} using Credit Card'
 
 class PayPalPaymentStrategy(PaymentStrategy):
     def process_payment(self, amount):
-        # Implement PayPal payment logic
         return f'Paid ${amount} using PayPal'
 

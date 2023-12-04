@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Cart, Product, CartItem,UserProfile
 from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,ViewCartCommand,RemoveFromCartCommand
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy,QuantityBasedDiscountStrategy
-from Shopping_cart_system.observers import BudgetExceededObserver
+from Shopping_cart_system.observers import BudgetExceededObserver,PriceDecreasedObserver
 
 def home(request):
     return render(request,'home.html')
@@ -147,7 +147,7 @@ def checkout(request):
         messages.success(request, discount_message)
 
     # Notify observers (BudgetExceededObserver)
-    observers = [BudgetExceededObserver()]
+    observers = [BudgetExceededObserver(),PriceDecreasedObserver()]
     for observer in observers:
         observer.notify(request, total_price)
 
@@ -158,4 +158,28 @@ def checkout(request):
     }
 
     return render(request, 'checkout.html', data)
+
+def process_payment(request):
+    user_cart,created = Cart.objects.get_or_create(user=request.user)
+    #print(created)
+
+    payment_method = request.POST.get('payment_method')
+    total_price = request.POST.get('total_price')
+
+    # Payment strategy
+    if payment_method == 'credit card':
+        payment_strategy = CreditCardPaymentStrategy()
+    elif payment_method == 'paypal':
+        payment_strategy = PayPalPaymentStrategy()
+    else:
+        # Handling invalid payment method
+        return render(request, 'checkout.html', {'error_message': 'Invalid payment method'})
+
+    # Processing payment
+    payment_result = payment_strategy.process_payment(total_price)
+
+    # Clearing the cart after payment is done
+    user_cart.cartitem_set.all().delete()
+
+    return render(request, 'order_placed.html', {'data': payment_result})
 
