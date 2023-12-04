@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from Shopping_cart_system.models import CartItem,Product
+from django.http import HttpResponseBadRequest
 
 class Command(ABC):
     @abstractmethod
@@ -40,7 +41,7 @@ class RemoveFromCartCommand(Command):
             else:
                 cart_item.delete()
         except CartItem.DoesNotExist:
-            pass  # Handle the case where the item is not in the cart
+            raise HttpResponseBadRequest("The item is not in the cart.") 
 
 class ViewProductsCommand(Command):
     def __init__(self, category):
