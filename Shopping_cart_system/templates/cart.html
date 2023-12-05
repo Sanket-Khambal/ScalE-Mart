@@ -4,22 +4,336 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
+    {% load static %}
+    <style>
+        html,
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            /* background-color: lightskyblue */
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            top: 0;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 30px;
+            padding-left: 25px;
+            font-style: italic;
+            color: whitesmoke;
+        }
+
+        .menu {
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 2px 0;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding-right: 20px;
+        }
+
+        .hamburger-icon {
+            width: 30px;
+            height: 2px;
+            background-color: white;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 54px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        #logout-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid white;
+            text-align: center;
+            margin-top:2px
+        }
+
+        #logout-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .logout-home {
+            margin-right: 30%;
+            padding: 5px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid white;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        a.logout {
+            background-color: #333;
+            border-radius: 15px;
+            padding: 2px 0;
+            border: 1px solid white;
+        }
+
+        #nav-options {
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        #mainContent {
+            /* background-color: lightcoral; */
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            align-items: center;
+            display:flex;  
+            flex-direction: row; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-container-catlog{
+            height: auto;
+            width: 40%;
+            padding-top: 15%;
+            /* background-color: lightcoral; */
+        }
+        .right-container-catlog{
+            height: auto;
+            width:100%;
+            background-color:lightgrey ;
+        }
+        .img-container-catlog {
+            height: 60%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        .heading{
+            font-size: 30px;
+            /* background-color: aqua; */
+        }
+
+        .catlog-heading{
+            text-align: left;
+            padding-left: 5%;
+        }
+
+        h1,h3{
+            text-align: center;
+        }
+        .cat-container-prod{
+            background-color: rgba(255, 255, 255);
+            height: auto;
+            width: 90%;
+            margin-left: 5%;
+            text-align: center;
+            padding: 15px 0px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            border-radius: 30px;
+        }
+        .category-container-list{
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .left-prod-container{
+            margin-left: 2%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 70%;
+        }
+        .prod-heading{
+            font-size: xxx-large;
+            margin-bottom: 15px;
+        }
+
+        .right-prod-container
+        {
+            margin-right: 5%;
+            width: 20%;
+            /* background-color: lightcoral; */
+        }
+        .prod-price{
+            text-align: center;
+            margin-left: 2%;
+            font-size: larger;
+            margin-right: 10%;
+            padding: 4px;
+            font-weight: 600;
+        }
+        .prod-pricevalue{
+            text-align: -webkit-left;
+            margin-right: 20%;
+            font-size: x-large;
+        }
+
+        .price-flex_position{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .prod_delcart{
+            background-color: rgb(205, 84, 84);
+            padding: 5%;
+            border: 2px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+        }
+        .prod_delcart:hover{
+            background-color: rgb(236, 0, 0);
+            color:white;
+            padding: 5%;
+            border: 2px solid black;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .prod_checkout{
+            background-color: #333;
+            padding: 1%;
+            border: 2px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            margin-left: 73%;
+            width: 20%;
+            text-align: center;
+            text-decoration: none;
+        }
+        .prod_checkout:hover{
+            background-color: white;
+            padding: 1%;
+            border: 2px solid black;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #333;
+            margin-left: 73%;
+            width: 20%;
+            text-align: center;
+            text-decoration: none;
+        }
+        a{  
+            color:white;
+            text-decoration: none;
+        }
+        a:hover{  
+            color:black;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h2>Shopping Cart</h2>
+    <nav>
+        <div class="logo">SCS</div>
+        <div class="menu">
+            <a href="{% url 'user_home' %}" class="logout-home" id="nav-options">Home</a>
 
-    {% if cart_items_data %}
-        <ul>
-            {% for item in cart_items_data %}
-                <li>{{ item.product_name }} - Quantity: {{ item.quantity }} - Total Price: ${{ item.total_price }}</li>
-                <a href="{% url 'remove_from_cart' product_id=item.id quantity=1 %}">Remove</a>
-            {% endfor %}
-        </ul>
-        <p>Total Price: ${{ total_price }}</p>
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
-    <a href="{% url 'checkout' %}">Checkout</a>
-    <a href="{% url 'user_home' %}">Back to Home</a>
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+            </div>
+            <div class="dropdown-list" id="logout-dropdown">
+                <a href="{% url 'view_cart' %}" class="logout" id="nav-options">My Cart</a>
+                <a href="{% url 'home' %}" class="logout" id="nav-options">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main id="mainContent"> 
+
+        <div class = "left-container-catlog">
+            <div class = "img-container-catlog">
+	    	<img id="background-image" src="{% static 'Home_shopping_wallpaper.jpg' %}" alt="Background Image">
+	        </div>
+        </div>
+        <div class = "right-container-catlog">
+            <div class = "categories-list">
+                <h1 class = "catlog-heading"> My Cart </h1>
+		        {% if cart_items_data %}
+                <div class = "category-container-list">
+		        {% for item in cart_items_data %}
+                    <div class = "cat-container-prod">
+                        <div class = "left-prod-container">
+                            <div class = "prod-heading">{{ item.product_name }}</div>
+                            <p>Quantity: {{ item.quantity }}</p>
+                        </div>
+                        <div class = "right-prod-container">
+                            <div class="price-flex_position">
+                                <p class="prod-price">Price:</p>
+                                <p class="prod-pricevalue"> {{ item.total_price }}</p>
+                            </div>
+                            <div class="prod_delcart">
+			    	            <a href="{% url 'remove_from_cart' product_id=item.id quantity=1 %}">Remove</a>				    
+			                </div>
+                        </div>
+		        </div>
+		        {% endfor %}
+		        {% else %}
+        	        <p>Your cart is empty.</p>
+    		    {% endif %}
+                <div class="prod_checkout"><a href="{% url 'checkout' %}">Checkout</a></div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Shopping Cart System. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar Dropdown logic
+        function toggleMenu() {
+            var dropdown = document.getElementById('logout-dropdown');
+            dropdown.classList.toggle('show');
+        }
+    </script>
+
 </body>
 </html>

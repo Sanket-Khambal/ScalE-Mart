@@ -5,39 +5,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart System</title>
+    {% load static %}
+
     <style>
+        html,
         body {
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            height: 92%;
+            width: 100%;
+            /* background-color: lightskyblue */
+        }
+
+        nav {
+            background-color: #333;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            padding: 10px;
+            top: 0;
+            justify-content: space-between;
         }
 
-        #background-image {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: -1;
+        .logo {
+            font-size: 30px;
+            padding-left: 25px;
+            font-style: italic;
+            color: whitesmoke;
         }
 
-        .content {
-            text-align: center;
-            color: white;
+        .menu {
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 2px 0;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding-right: 20px;
+        }
+
+        .hamburger-icon {
+            width: 30px;
+            height: 2px;
+            background-color: white;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 54px;
+            right: 20px;
+            border-radius: 5px;
             z-index: 1;
-            width: 40%
         }
 
-        h1 {
-            font-size: 3.5em;
-            margin-bottom: 20px;
-            color: black;
-            background-color: azure;
+        #logout-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid white;
+            text-align: center;
+            margin-top:2px
+        }
+
+        #logout-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .logout-home {
+            margin-right: 30%;
+            padding: 5px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid white;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        a.logout {
+            background-color: #333;
+            border-radius: 15px;
+            padding: 2px 0;
+            border: 1px solid white;
+        }
+
+        #nav-options {
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        #mainContent {
+            /* background-color: lightcoral; */
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            align-items: center;
+            display:flex;  
+            flex-direction: row; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-container{
+            height: 98%;
+            width: 70%;
+            padding-top: 30%;
+            padding-left: 5%;
+            /* background-color: lightcoral; */
+        }
+        .right-container{
+            height: 100%;
+            width:100%;
+            background-color:lightgrey ;
+            padding-top: 300px;
+        }
+        .img-container {
+            height: 60%;
+            width: 80%;
+            background-repeat: no-repeat;
+        }
+        .heading{
+            font-size: 40px;
+            padding-top: 200px;
+        }
+        h1,h3{
+            text-align: center;
+        }
+        .cat-container{
+            /* background-color: blueviolet; */
+            height:50px;
+            width: 80%;
+            margin-left: 10%;
+            text-align: center;
+            padding: 15px 0px;
+        }
+        .category-container-list{
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .container-btn{
+            background-color: lightgray;
+            text-decoration: none;
+            font-size: 35px;
+            border: 2px solid black;
+            width: 80%;
+            margin: 5px 10%;
+            border-radius: 10px;
+            cursor: pointer;
         }
 
         .buttons {
@@ -51,28 +189,54 @@
             font-size: 1.2em;
             text-decoration: none;
             color: white;
-            background-color: #5268db;
+            background-color: #333;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
         .button:hover {
-            background-color: #5466b1;
+            color:#333;
+            background-color: white;
         }
+
     </style>
 </head>
 
 <body>
+    <nav>
+        <div class="logo">SCS</div>
+    </nav>
 
-    
-    <div class="content">
-        <h1>Welcome to QuizApp!</h1>
-        <div class="buttons">
-            <a href='{% url "login" %}' class="button">Login</a>
-            <a href='{% url "register" %}' class="button"> Sign Up</a>
+    <main id="mainContent"> 
+
+        <div class = "left-container">
+            <div class = "img-container">
+                <img id="background-image" src="{% static 'Home_shopping_wallpaper.jpg' %}" alt="Background Image">
+
+            </div>
         </div>
-    </div>
+        <div class = "right-container">
+            <h1>Welcome to Shopping Cart System!</h1>
+            <div class="buttons">
+                <a href='{% url "login" %}' class="button">Login</a>
+                <a href='{% url "register" %}' class="button"> Sign Up</a>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Shopping Cart System. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar Dropdown logic
+        function toggleMenu() {
+            var dropdown = document.getElementById('logout-dropdown');
+            dropdown.classList.toggle('show');
+        }
+    </script>
 </body>
 
 </html>

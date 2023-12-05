@@ -1,51 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
+    {% load static %}
+    <style>
+        html,
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            /* background-color: lightskyblue */
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            top: 0;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 30px;
+            padding-left: 25px;
+            font-style: italic;
+            color: whitesmoke;
+        }
+
+        .menu {
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 2px 0;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding-right: 20px;
+        }
+
+        .hamburger-icon {
+            width: 30px;
+            height: 2px;
+            background-color: white;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 54px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        #logout-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid white;
+            text-align: center;
+            margin-top: 2px
+        }
+
+        #logout-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .logout-home {
+            margin-right: 30%;
+            padding: 5px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid white;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        a.logout {
+            background-color: #333;
+            border-radius: 15px;
+            padding: 2px 0;
+            border: 1px solid white;
+        }
+
+        #nav-options {
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        #mainContent {
+            /* background-color: lightcoral; */
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .left-container-catlog {
+            height: auto;
+            width: 40%;
+            padding-top: 15%;
+            /* background-color: lightcoral; */
+        }
+
+        .right-container-catlog {
+            height: auto;
+            width: 100%;
+            background-color: lightgrey;
+        }
+
+        .img-container-catlog {
+            height: 60%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .heading {
+            font-size: 30px;
+            /* background-color: aqua; */
+        }
+
+        .catlog-heading {
+            text-align: left;
+            padding-left: 5%;
+        }
+
+        h1,
+        h3 {
+            text-align: center;
+        }
+
+        .cat-container-prod {
+            background-color: rgba(255, 255, 255);
+            height: 70px;
+            width: 90%;
+            margin-left: 5%;
+            text-align: center;
+            padding: 5px 0px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            border-radius: 30px;
+        }
+
+        .category-container-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .left-prod-container {
+            margin-left: 2%;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            width: 70%;
+            /* background-color: lightblue; */
+        }
+
+        .prod-heading {
+            font-size: xx-large;
+            margin-bottom: 15px;
+        }
+
+        .right-prod-container {
+            margin-right: 5%;
+            width: 20%;
+            /* background-color: lightcoral; */
+        }
+
+        .prod-price {
+            text-align: center;
+            margin-left: 2%;
+            font-size: larger;
+            margin-right: 10%;
+            padding: 4px;
+            font-weight: 600;
+        }
+
+        .prod-pricevalue {
+            text-align: -webkit-left;
+            margin-right: 20%;
+            font-size: x-large;
+        }
+
+        .price-flex_position {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .prod_plcorder:hover {
+            background-color: green;
+            padding: 1%;
+            border: 2px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            margin-left: 73%;
+            width: 20%;
+            text-align: center;
+        }
+
+        .prod_plcorder {
+            background-color: #333;
+            padding: 1%;
+            border: 2px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            margin-left: 73%;
+            width: 20%;
+            text-align: center;
+        }
+
+        .input_quant {
+            margin-top: 20px;
+            padding: 5px;
+        }
+
+        .prod_quant {
+            padding-top: 1%;
+            padding-left: 10%;
+        }
+
+        #payment_method {
+            margin-top: 20px;
+            padding: 5px;
+        }
+    </style>
+
 </head>
+
 <body>
-    <h2>Checkout</h2>
+    <nav>
+        <div class="logo">SCS</div>
+        <div class="menu">
+            <a href="{% url 'user_home' %}" class="logout-home" id="nav-options">Home</a>
 
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+            </div>
+            <div class="dropdown-list" id="logout-dropdown">
+                <a href="{% url 'view_cart' %}" class="logout" id="nav-options">My Cart</a>
+                <a href="{% url 'home' %}" class="logout" id="nav-options">Logout</a>
+            </div>
+        </div>
+    </nav>
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-                <br>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h3>Cart Items:</h3>
-    <ul>
-        {% for item in cart_items %}
-            <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ${{ item.product.price }}</li>
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        <br>
         {% endfor %}
     </ul>
+    {% endif %}
+    <main id="mainContent">
+        <div class="left-container-catlog">
+            <div class="img-container-catlog">
+                <img id="background-image" src="{% static 'Home_shopping_wallpaper.jpg' %}" alt="Background Image">
+            </div>
+        </div>
+        <div class="right-container-catlog">
+            <div class="categories-list">
+                <h1 class="catlog-heading"> Checkout </h1>
+                <div class="category-container-list">
+                    {% for item in cart_items %}
+                    <div class="cat-container-prod">
+                        <!-- <div class="cat-container-row"> -->
+                        <div class="left-prod-container">
+                            <div class="prod-heading">{{ item.product.name }}</div>
+                            <div class="prod_quant">
+                                <p>{{ item.product.quantity }}</p>
+                            </div>
+                        </div>
+                        <div class="right-prod-container">
+                            <div class="price-flex_position">
+                                <p class="prod-price">Price:</p>
+                                <p class="prod-pricevalue"> {{ item.product.price }}</p>
+                            </div>
+                        </div>
+                        <!-- </div> -->
+                    </div>
+                    {% endfor %}
+                    <div class="cat-container-prod">
+                        <div class="left-prod-container">
+                            <div class="prod-heading"> Apply Coupon:</div>
+                        </div>
+                        <div class="right-prod-container">
+                            <div class="price-flex_position">
+                                <form action="{% url 'checkout' %}" method="get">
+                                    <input class="input_quant" type="text" name="coupon_code"
+                                        placeholder="Enter coupon code">
+                                    <input type="submit" value="Apply Coupon">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cat-container-prod">
+                        <div class="left-prod-container">
+                            <div class="prod-heading">Select Payment: </div>
+                        </div>
+                        <div class="right-prod-container">
+                            <div class="price-flex_position">
+                                <form method="post" action="{% url 'process_payment' %}">
+                                    {% csrf_token %}
+                                    <label class="input_quant" for="payment_method">Select Payment Method:</label>
+                                    <select name="payment_method" id="payment_method">
+                                        <option value="credit card">Credit Card</option>
+                                        <option value="paypal">Paypal</option>
+                                    </select>
+                                
+                            </div>
+                            <input type="hidden" name="total_price" value="{{ total_price }}">
+                        </div>
+                    </div>
+                    <div class="cat-container-prod">
+                        <div class="left-prod-container">
+                            <div class="prod-heading">Total Payment</div>
+                        </div>
+                        <div class="right-prod-container">
+                            <div class="price-flex_position">
+                                <p class="prod-price">Total Price:</p>
+                                <p class="prod-pricevalue"> {{ total_price }} </p>
+                            </div>
+                        </div>
 
-    <h3>Total Price:</h3>
-    <p>${{ total_price }}</p>
+                    </div>
+                    <button class="prod_plcorder" type="submit">Make Payment</button>
+                </form>
+                </div>
 
-    <h3>Apply Coupon:</h3>
-    <form action="{% url 'checkout' %}" method="get">
-        <input type="text" name="coupon_code" placeholder="Enter coupon code">
-        <input type="submit" value="Apply Coupon">
-    </form>
-    <br>
-    <form method="post" action="{% url 'process_payment' %}">
-        {% csrf_token %}
-        <label for="payment_method">Select Payment Method:</label>
-        <select name="payment_method" id="payment_method">
-            <option value="credit card">Credit Card</option>
-            <option value="paypal">Paypal</option>
-        </select>
-        <br>
-        <input type="hidden" name="total_price" value="{{ total_price }}">
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2023 Shopping Cart System. All Rights Reserved.</p>
+    </footer>
 
-        <button type="submit">Make Payment</button>
-    </form>
+    <script>
+        // Navbar Dropdown logic
+        function toggleMenu() {
+            var dropdown = document.getElementById('logout-dropdown');
+            dropdown.classList.toggle('show');
+        }
+    </script>
 
-    <a href="{% url 'user_home' %}">Back to Home</a>
 </body>
+
 </html>

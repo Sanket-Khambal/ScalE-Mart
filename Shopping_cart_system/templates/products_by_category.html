@@ -4,26 +4,313 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - {{ category }}</title>
+    {% load static %}
+    <style>
+        html,
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            /* background-color: lightskyblue */
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            top: 0;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 30px;
+            padding-left: 25px;
+            font-style: italic;
+            color: whitesmoke;
+        }
+
+        .menu {
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 2px 0;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding-right: 20px;
+        }
+
+        .hamburger-icon {
+            width: 30px;
+            height: 2px;
+            background-color: white;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 54px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        #logout-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid white;
+            text-align: center;
+            margin-top:2px
+        }
+
+        #logout-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .logout-home {
+            margin-right: 30%;
+            padding: 5px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid white;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        a.logout {
+            background-color: #333;
+            border-radius: 15px;
+            padding: 2px 0;
+            border: 1px solid white;
+        }
+
+        #nav-options {
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #mainContent {
+            /* background-color: lightcoral; */
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            align-items: center;
+            display:flex;  
+            flex-direction: row; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-container-catlog{
+            height: auto;
+            width: 40%;
+            padding-top: 15%;
+            /* background-color: lightcoral; */
+        }
+        .right-container-catlog{
+            height: auto;
+            width:100%;
+            background-color:lightgrey ;
+        }
+        .img-container-catlog {
+            height: 60%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        .heading{
+            font-size: 30px;
+            /* background-color: aqua; */
+        }
+
+        .catlog-heading{
+            text-align: left;
+            padding-left: 5%;
+        }
+
+        h1,h3{
+            text-align: center;
+        }
+        .cat-container-prod{
+            background-color: rgba(255, 255, 255);
+            height: auto;
+            width: 90%;
+            margin-left: 5%;
+            text-align: center;
+            padding: 15px 0px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            border-radius: 30px;
+        }
+        .category-container-list{
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .left-prod-container{
+            margin-left: 2%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 60%;
+        }
+        .prod-heading{
+            font-size: xxx-large;
+        }
+        .prod-desc{
+            text-align: -webkit-left;
+        }
+        .right-prod-container
+        {
+            margin-right: 15%;
+            width: 20%;
+            /* background-color: lightcoral; */
+        }
+        .price-flex_position{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .prod-price{
+            text-align: center;
+            margin-left: 2%;
+            font-size: larger;
+            margin-right: 10%;
+            padding: 4px;
+            font-weight: 600;
+        }
+        .prod-pricevalue{
+            text-align: -webkit-left;
+            margin-right: 20%;
+            font-size: x-large;
+        }
+        .input_quant{
+            width: 40%;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .prod-quantity{
+            font-weight: bold;
+            width: 50%;
+            margin-bottom: 10px;
+        }
+        .prod_addcart{
+            background-color: white;
+            padding: 3%;
+            border: 2px solid black;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .prod_addcart:hover{
+            background-color: #333;
+            color:white;
+            padding: 3%;
+            border: 2px solid black;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+    </style>
+
 </head>
 <body>
-    <h1>Products - {{ category }}</h1>
+    <nav>
+        <div class="logo">SCS</div>
+        <div class="menu">
+            <a href="{% url 'user_home' %}" class="logout-home" id="nav-options">Home</a>
 
-    {% if products %}
-        <ul>
-            {% for product in products %}
-                <li>{{ product.name }} - ${{ product.price }}</li>
-                <form method="post" action="{% url 'add_to_cart' product_id=product.id %}">
-                    {% csrf_token %}
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" name="quantity" value="1" min="1" required>
-                    <button type="submit">Add to Cart</button>
-                </form>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No products found for the selected category.</p>
-    {% endif %}
-    
-    <a href="{% url 'user_home' %}">Back to Home</a>
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+            </div>
+            <div class="dropdown-list" id="logout-dropdown">
+                <a href="{% url 'view_cart' %}" class="logout" id="nav-options">My Cart</a>
+                <a href="{% url 'home' %}" class="logout" id="nav-options">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main id="mainContent"> 
+        <div class = "left-container-catlog">
+            <div class = "img-container-catlog">
+                <img id="background-image" src="{% static 'Home_shopping_wallpaper.jpg' %}" alt="Background Image">
+            </div>
+        </div>
+        <div class="right-container-catlog">
+            <div class="categories-list">
+                {% if products %}
+                <h1 class="catlog-heading"> {{ category }} </h1>
+                <h3 class="catlog-heading"> Choose your Product </h3>
+                <div class="category-container-list">
+                    {% for product in products %}
+                    <div class="cat-container-prod">
+                        <div class="left-prod-container">
+                            <div class="prod-heading">{{ product.name }}</div>
+                        </div>
+                        <div class="right-prod-container">
+                            <div class="price-flex_position">
+                                <p class="prod-price">Price:</p>
+                                <p class="prod-pricevalue"> {{ product.price }} </p>
+                            </div>
+                            <form method="post" action="{% url 'add_to_cart' product_id=product.id %}">
+                                {% csrf_token %}
+                            <div class="price-flex_position">
+                                <label class="prod-quantity" for="quantity">Quantity:</label>
+                                <input class="prod-quantity" type="number" name="quantity" value="1" min="1" required>
+                            </div>
+                                <button class="prod_addcart" type="submit">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p>No Products found</p>
+                    {% endif %}
+                </div>
+            </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Shopping Cart System. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar Dropdown logic
+        function toggleMenu() {
+            var dropdown = document.getElementById('logout-dropdown');
+            dropdown.classList.toggle('show');
+        }
+    </script>
+
 </body>
 </html>

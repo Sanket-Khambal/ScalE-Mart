@@ -76,7 +76,8 @@ def view_cart(request):
             'product_name': item.product.name,
             'quantity': item.quantity,
             'total_price': item.product.price * item.quantity,
-            'id':item.product.id
+            'id':item.product.id,
+            'category':item.product.category
         }
         for item in cart_items
     ]

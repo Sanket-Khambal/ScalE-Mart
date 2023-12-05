@@ -4,33 +4,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Categories</title>
+    {% load static %}
+    <style>
+        html,
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 92%;
+            width: 100%;
+            /* background-color: lightskyblue */
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            top: 0;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 30px;
+            padding-left: 25px;
+            font-style: italic;
+            color: whitesmoke;
+        }
+
+        .menu {
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 2px 0;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding-right: 20px;
+        }
+
+        .hamburger-icon {
+            width: 30px;
+            height: 2px;
+            background-color: white;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 54px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        #logout-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid white;
+            text-align: center;
+            margin-top:2px
+        }
+
+        #logout-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .logout-home {
+            margin-right: 30%;
+            padding: 5px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid white;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        a.logout {
+            background-color: #333;
+            border-radius: 15px;
+            padding: 2px 0;
+            border: 1px solid white;
+        }
+
+        #nav-options {
+            padding-left: 5px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+/* --Main Homepage  */
+        #mainContent {
+            /* background-color: lightcoral; */
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            align-items: center;
+            display:flex;  
+            flex-direction: row; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-container{
+            height: 98%;
+            width: 70%;
+            padding-top: 30%;
+            padding-left: 5%;
+            /* background-color: lightcoral; */
+        }
+        .right-container{
+            height: 100%;
+            width:100%;
+            background-color:lightgrey ;
+        }
+        .img-container {
+            height: 60%;
+            width: 80%;
+            background-repeat: no-repeat;
+        }
+        .heading{
+            font-size: 40px;
+            /* background-color: aqua; */
+        }
+        h1,h3{
+            text-align: center;
+        }
+        .cat-container{
+            /* background-color: blueviolet; */
+            height:50px;
+            width: 80%;
+            margin-left: 10%;
+            text-align: center;
+            padding: 15px 0px;
+        }
+        .category-container-list{
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .container-btn{
+            background-color: lightgray;
+            text-decoration: none;
+            font-size: 35px;
+            border: 2px solid black;
+            width: 80%;
+            margin: 5px 10%;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .a_link{
+            text-decoration: none;
+            color: black;
+        }
+        .budget_btn{
+            margin-left: 45%;
+            margin-top: 30px;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .budget_input{
+            margin-left: 20%;
+            margin-top: 20px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1><a href="#">Start Shopping</a></h1>
-    <div class="product-options">
-        {% for category in categories %}
-            <div class="product-category">
-                <a href="{% url 'products_by_category' category=category.category %}">
-                    <h2>{{ category.category }}</h2>
-                </a>
+    <nav>
+        <div class="logo">SCS</div>
+        <div class="menu">
+            <a href="{% url 'user_home' %}" class="logout-home" id="nav-options">Home</a>
+
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
+                <div class="hamburger-icon"></div>
             </div>
-        {% endfor %}
-    </div>
-    <a href="{% url 'view_cart' %}">Your Cart</a>
-    <br>
-    <button id="setBudgetButton">Set Budget</button>
-    <form method="post" action="{% url 'set_budget' %}" id="budgetForm" style="display: none;">
-        {% csrf_token %}
-        <label for="budget">Set Budget:</label>
-        <input type="text" name="budget" required>
-        <button type="submit">Set Budget</button>
-    </form>
+            <div class="dropdown-list" id="logout-dropdown">
+                <a href="{% url 'view_cart' %}" class="logout" id="nav-options">My Cart</a>
+                <a href="{% url 'home' %}" class="logout" id="nav-options">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="mainContent"> 
+
+        <div class = "left-container">
+            <div class = "img-container">
+                <img id="background-image" src="{% static 'Home_shopping_wallpaper.jpg' %}" alt="Background Image">
+            </div>
+        </div>
+        <div class = "right-container">
+            <div class = "categories-list">
+                <h1 class = "heading"> Happy Shopping </h1>
+                <h3> Choose your Category </h3>
+                <div class = "category-container-list">
+		    {% for category in categories %}
+                    <div class = "cat-container">
+		    <a class = "a_link" href="{% url 'products_by_category' category=category.category %}">
+                    <h1 class = "container-btn">{{ category.category }}</h1>
+                    </a>
+	            </div>
+		    {% endfor %}
+                </div>
+            </div>
+            
+            <button class="budget_btn" id="setBudgetButton">Set Budget</button>
+            <form method="post" action="{% url 'set_budget' %}" id="budgetForm" style="display: none;">
+                {% csrf_token %}
+                <div class = "budget_input">
+                <label for="budget">Set Budget:</label>
+                <input type="text" name="budget" required>
+                <button type="submit">Set Budget</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+
+
+    <footer>
+        <p>&copy; 2023 Shopping Cart System. All Rights Reserved.</p>
+    </footer>
 
     <script>
         document.getElementById('setBudgetButton').addEventListener('click', function() {
             var form = document.getElementById('budgetForm');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         });
+
+        // Navbar Dropdown logic
+        function toggleMenu() {
+            var dropdown = document.getElementById('logout-dropdown');
+            dropdown.classList.toggle('show');
+        }
     </script>
 </body>
 </html>
