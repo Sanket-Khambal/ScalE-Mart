@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from decimal import Decimal
 
 class PriceCalculationStrategy(ABC):
+    #Interface for implementing price calculation strategies
     @abstractmethod
     def calculate_price(self, product, quantity):
         pass
@@ -30,7 +31,7 @@ class CouponDiscountStrategy(PriceCalculationStrategy):
         base_price = self.base_strategy.calculate_price(product, quantity)
 
         if self.is_coupon_valid():
-            discount_amount = (self.discount_percentage / Decimal(100)) * base_price
+            discount_amount = (self.discount_percentage / Decimal(100)) * base_price    #decreasing price if coupon is valid
             return base_price - discount_amount
         else:
             return base_price
@@ -41,6 +42,7 @@ class CouponDiscountStrategy(PriceCalculationStrategy):
         return self.coupon_code.lower() in valid_coupons
 
 class QuantityBasedDiscountStrategy(PriceCalculationStrategy):
+    # Strategy based on the number of products in the cart
     def __init__(self, base_strategy, discount_threshold, discount_percentage):
         self.base_strategy = base_strategy
         self.discount_threshold = discount_threshold
@@ -48,11 +50,12 @@ class QuantityBasedDiscountStrategy(PriceCalculationStrategy):
 
     def calculate_price(self, product, quantity):
         base_price = self.base_strategy.calculate_price(product, quantity)
-        discount_amount = (self.discount_percentage / Decimal(100)) * base_price
+        discount_amount = (self.discount_percentage / Decimal(100)) * base_price    #decreasing price 
         return base_price - discount_amount
     
         
 class PaymentStrategy(ABC):
+    # Strategy to process payment
     @abstractmethod
     def process_payment(self, amount):
         pass

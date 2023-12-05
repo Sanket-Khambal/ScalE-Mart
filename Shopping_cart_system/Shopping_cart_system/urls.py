@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from .views import add_to_cart, view_cart, checkout,register_user,login_user,home,view_products_by_category,categories,remove_from_cart,set_budget,process_payment
 
-#shubham checking for pull request
+# defining urls to view pages
 
 urlpatterns = [
     path('admin/', admin.site.urls),

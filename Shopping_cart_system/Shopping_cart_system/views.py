@@ -10,12 +10,15 @@ from Shopping_cart_system.commands import AddToCartCommand,ViewProductsCommand,V
 from Shopping_cart_system.strategies import DefaultPriceCalculationStrategy,DiscountPriceCalculationStrategy,CouponDiscountStrategy,CreditCardPaymentStrategy,PayPalPaymentStrategy,QuantityBasedDiscountStrategy
 from Shopping_cart_system.observers import BudgetExceededObserver,PriceDecreasedObserver
 
+
+# Used render for rendering pages
+
 def home(request):
-    return render(request,'home.html')
+    return render(request,'home.html')         
 
 def register_user(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserCreationForm(request.POST)                # form to get details from the frontend
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -26,7 +29,7 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 def login_user(request):
-    form = AuthenticationForm(request, data=request.POST or None)
+    form = AuthenticationForm(request, data=request.POST or None)           # Used authentication form to authenticate users
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -39,14 +42,14 @@ def login_user(request):
     return render(request, 'login.html', {'form': form})
 
 def categories(request):
-    unique_categories = Product.objects.values('category').distinct()
+    unique_categories = Product.objects.values('category').distinct()        # getting distinct strategies
     return render(request, 'categories.html', {'categories': unique_categories})
 
 @login_required
 def set_budget(request):
     if request.method == 'POST':
         budget = request.POST.get('budget')
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)  # getting user instance
         user_profile.budget = budget
         user_profile.save()
         return redirect('user_home')  
@@ -60,15 +63,15 @@ def view_products_by_category(request, category):
 
     data = {
         'category': category,
-        'products': products,
+        'products': products,                     # passing data to frontend
     }
 
     return render(request, 'products_by_category.html', data)
 
 def view_cart(request):
-    user_cart, created = Cart.objects.get_or_create(user=request.user)
+    user_cart, created = Cart.objects.get_or_create(user=request.user)  # getting cart instance
 
-    view_cart_command = ViewCartCommand(cart=user_cart)
+    view_cart_command = ViewCartCommand(cart=user_cart) # Viewing cart using view_cart_command
     cart_items = view_cart_command.execute()
 
     cart_items_data = [
@@ -82,11 +85,11 @@ def view_cart(request):
         for item in cart_items
     ]
 
-    total_price = sum(item['total_price'] for item in cart_items_data)
+    total_price = sum(item['total_price'] for item in cart_items_data) # Calculating total price
 
     context = {
         'cart_items_data': cart_items_data,
-        'total_price': total_price,
+        'total_price': total_price,                              # passing data to frontend
     }
 
     return render(request, 'cart.html', context)
@@ -99,7 +102,8 @@ def add_to_cart(request, product_id):
     # Getting the product based on the product_id
     product = Product.objects.get(pk=product_id)
     category = product.category
-
+    
+    # Adding to cart using add_to_cart_command
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
         add_to_cart_command = AddToCartCommand(cart=user_cart, product=product, quantity=quantity)
@@ -107,8 +111,9 @@ def add_to_cart(request, product_id):
         return redirect('products_by_category',category=category) 
     
 def remove_from_cart(request, product_id, quantity):
-    product = Product.objects.get(pk=product_id)
-    user_cart = Cart.objects.get(user=request.user)
+    # Removing from cart using remove_to_cart command
+    product = Product.objects.get(pk=product_id)  # getting products
+    user_cart = Cart.objects.get(user=request.user) 
     remove_command = RemoveFromCartCommand(cart=user_cart, product=product, quantity=quantity)
     remove_command.execute()
     return redirect('view_cart') 
