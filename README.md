@@ -1,5 +1,5 @@
-# Shopping_Cart_System(OOP)
-Shopping Cart System
+# "ScalE-Mart" (Scalable E-Commerce with Design Patterns).
+
 This repository contains a Django-based shopping cart project that enables users to browse products, add items to their cart, apply discounts, and proceed to checkout. The project incorporates various features, including user authentication, product categorization, and a flexible discount system.
 
 Features
